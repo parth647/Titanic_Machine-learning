@@ -9,8 +9,9 @@ import seaborn as sns  # for statistical analysis
 
 titanic_df = pd.read_csv("train.csv") #fetch the data from the train file
 titanic_df=titanic_df.fillna(titanic_df.median())#fill the data with missing values
-titanic_df=titanic_df.drop(['PassengerId','Name','Ticket'], axis=1)#remove the unecessary data
-
+#remove the unecessary data
+titanic_df['family']=titanic_df['SibSp']+titanic_df['Parch']
+titanic_df=titanic_df.drop(['PassengerId','Name','Ticket','SibSp','Parch'], axis=1)
   #lets do some analysis
   
 #How many males and females survived 
