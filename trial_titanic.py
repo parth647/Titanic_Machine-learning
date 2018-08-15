@@ -13,12 +13,15 @@ titanic_df=titanic_df.fillna(titanic_df.median())#fill the data with missing val
 titanic_df['family']=titanic_df['SibSp']+titanic_df['Parch']
 titanic_df=titanic_df.drop(['PassengerId','Name','Ticket','SibSp','Parch'], axis=1)
   #lets do some analysis
-  
-#How many males and females survived 
-sns.countplot(x='Survived',hue='Sex',data=titanic_df,order=[1,0])
-#age wise probablity of people surviving
-#You should know how facetGrid works
-facet = sns.FacetGrid(titanic_df, hue="Survived",aspect=5)
-facet.map(sns.kdeplot,'Age',shade= True)
-facet.set(xlim=(0, titanic_df['Age'].max()))
-facet.add_legend()
+titanic_df["Embarked"] = titanic_df["Embarked"].fillna("S")
+
+# plot
+sns.factorplot('Embarked','Survived', data=titanic_df,size=4,aspect=4)
+
+fig, (axis1,axis2,axis3) = plt.subplots(1,3,figsize=(15,5))
+# sns.factorplot('Embarked',data=titanic_df,kind='count',order=['S','C','Q'],ax=axis1)
+# sns.factorplot('Survived',hue="Embarked",data=titanic_df,kind='count',order=[1,0],ax=axis2)
+sns.countplot(x='Embarked', data=titanic_df, ax=axis1)
+sns.countplot(x='Survived', hue="Embarked", data=titanic_df, order=[1,0], ax=axis2)
+embark_perc = titanic_df[["Embarked", "Survived"]].groupby(['Embarked'],as_index=False).mean()
+sns.barplot(x='Embarked', y='Survived', data=embark_perc,order=['S','C','Q'],ax=axis3)
