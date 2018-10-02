@@ -141,3 +141,39 @@ sns.barplot(x='Person', y='Survived', data=person_perc, ax=axis2, order=['male',
 
 titanic_df.drop(['Person'],axis=1,inplace=True)
 test_df.drop(['Person'],axis=1,inplace=True)
+
+# Pclass
+
+# sns.factorplot('Pclass',data=titanic_df,kind='count',order=[1,2,3])
+sns.factorplot('Pclass','Survived',order=[1,2,3], data=titanic_df,size=5)
+
+# create dummy variables for Pclass column, & drop 3rd class as it has the lowest average of survived passengers
+pclass_dummies_titanic  = pd.get_dummies(titanic_df['Pclass'])
+pclass_dummies_titanic.columns = ['Class_1','Class_2','Class_3']
+pclass_dummies_titanic.drop(['Class_3'], axis=1, inplace=True)
+
+pclass_dummies_test  = pd.get_dummies(test_df['Pclass'])
+pclass_dummies_test.columns = ['Class_1','Class_2','Class_3']
+pclass_dummies_test.drop(['Class_3'], axis=1, inplace=True)
+
+titanic_df.drop(['Pclass'],axis=1,inplace=True)
+test_df.drop(['Pclass'],axis=1,inplace=True)
+
+titanic_df = titanic_df.join(pclass_dummies_titanic)
+test_df    = test_df.join(pclass_dummies_test)
+
+# define training and testing sets
+
+X_train = titanic_df.drop("Survived",axis=1)
+Y_train = titanic_df["Survived"]
+X_test  = test_df.drop("PassengerId",axis=1).copy()
+
+# Logistic Regression
+
+logreg = LogisticRegression()
+
+logreg.fit(X_train, Y_train)
+
+Y_pred = logreg.predict(X_test)
+
+logreg.score(X_train, Y_train)
